@@ -23,10 +23,7 @@ import android.util.Log;
 
 import com.twinone.locker.R;
 
-import org.twinone.ads.DefaultAdInterface;
-import org.twinone.locker.Constants;
 import org.twinone.locker.ui.MainActivity;
-import org.twinone.locker.util.LaunchInterstitialActivity;
 import org.twinone.locker.util.PrefUtils;
 import org.twinone.locker.version.VersionManager;
 import org.twinone.locker.version.VersionUtils;
@@ -267,23 +264,6 @@ public class AppLockService extends Service {
         removeRelockTimer(open);
     }
 
-    private void showInterstitial() {
-        if (!new DefaultAdInterface().adsEnabled()) return;
-
-        mAdCount++;
-        if (mAdCount % Constants.APPS_PER_INTERSTITIAL == 0)
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-//                    mInterstitialHelper.load();
-                    Intent i = new Intent(AppLockService.this, LaunchInterstitialActivity.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(i);
-                }
-            });
-
-    }
-
     private void showLocker(String packageName) {
         Intent intent = LockService.getLockIntent(this, packageName);
         intent.setAction(LockService.ACTION_COMPARE);
@@ -299,7 +279,6 @@ public class AppLockService extends Service {
     }
 
     private void onLockedAppClose(String close, String open) {
-        showInterstitial();
 
         setRelockTimer(close);
 

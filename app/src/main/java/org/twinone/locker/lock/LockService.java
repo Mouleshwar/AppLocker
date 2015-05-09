@@ -37,7 +37,6 @@ import android.widget.Toast;
 
 import com.twinone.locker.R;
 
-import org.twinone.ads.BannerHelper;
 import org.twinone.locker.lock.PasswordView.OnNumberListener;
 import org.twinone.locker.lock.PatternView.DisplayMode;
 import org.twinone.locker.lock.PatternView.OnPatternListener;
@@ -294,7 +293,6 @@ public class LockService extends Service implements View.OnClickListener,
     }
 
     private String mAction;
-    private BannerHelper mBannerHelper;
     /**
      * Called after views are inflated
      */
@@ -471,9 +469,6 @@ public class LockService extends Service implements View.OnClickListener,
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mBannerHelper != null) {
-            mBannerHelper.destroy();
-        }
         // if (mAdViewManager != null)
         // mAdViewManager.onDestroy();
         if (DEBUG_BIND)
@@ -767,10 +762,6 @@ public class LockService extends Service implements View.OnClickListener,
         }
         mAnimHide = null;
 
-        if (mBannerHelper != null) {
-            mBannerHelper.pause();
-        }
-
         // With stopSelf there is a problem with the rotation
         // If this isn't in, the ad view will not load
 
@@ -818,19 +809,12 @@ public class LockService extends Service implements View.OnClickListener,
 
     private void afterInflate() {
         setBackground();
-        if (options.showAds) {
-            if (mBannerHelper != null) {
-                mBannerHelper.destroy();
-            }
-            mBannerHelper = new BannerHelper(this,
-                    mRootView.findViewById(R.id.lock_ad_container));
-            mBannerHelper.loadAd();
 
-        } else {
-            // Don't use precious space
-            mRootView.findViewById(R.id.lock_ad_container).setVisibility(
-                    View.GONE);
-        }
+        // Don't use precious space
+        mRootView.findViewById(R.id.lock_ad_container).setVisibility(
+                View.GONE);
+
+
         // if (!AdViewManager.isOnEmulator() && !ACTION_CREATE.equals(mAction))
         // {
         // if (mAdViewManager == null) {
